@@ -7,7 +7,7 @@
 
 Name:           %{?scl_prefix}perl-libwww-perl
 Version:        6.43
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A Perl interface to the World-Wide Web
 License:        GPL+ or Artistic
 URL:            https://metacpan.org/release/libwww-perl
@@ -20,6 +20,7 @@ BuildRequires:  make
 BuildRequires:  %{?scl_prefix}perl-generators
 BuildRequires:  %{?scl_prefix}perl-interpreter
 BuildRequires:  %{?scl_prefix}perl(:VERSION) >= 5.8.1
+BuildRequires:  %{?scl_prefix}perl(Config)
 BuildRequires:  %{?scl_prefix}perl(CPAN::Meta::Requirements) >= 2.120620
 BuildRequires:  %{?scl_prefix}perl(ExtUtils::MakeMaker) >= 6.76
 BuildRequires:  %{?scl_prefix}perl(File::Copy)
@@ -75,7 +76,6 @@ BuildRequires:  %{?scl_prefix}perl(WWW::RobotRules) >= 6
 # HTML::Parse not used at tests
 
 # Tests:
-BuildRequires:  %{?scl_prefix}perl(Config)
 BuildRequires:  %{?scl_prefix}perl(File::Spec)
 BuildRequires:  %{?scl_prefix}perl(File::Temp)
 BuildRequires:  %{?scl_prefix}perl(FindBin)
@@ -140,6 +140,8 @@ use and even classes that help you implement simple HTTP servers.
 rm t/leak/no_leak.t
 %{?scl:scl enable %{scl} '}perl -i -ne %{?scl:'"}'%{?scl:"'}print $_ unless m{^t/leak/no_leak.t}%{?scl:'"}'%{?scl:"'} MANIFEST%{?scl:'}
 %endif
+# Normalize shebangs
+%{?scl:scl enable %{scl} '}perl -MConfig -i -pe %{?scl:'"}'%{?scl:"'}s{^#!/usr/bin/perl}{$Config{startperl}}%{?scl:'"}'%{?scl:"'} examples/*%{?scl:'}
 
 %build
 # Install the aliases by default
@@ -164,6 +166,9 @@ unset COVERAGE PERL_LWP_ENV_HTTP_TEST_SERVER_TIMEOUT PERL_LWP_ENV_HTTP_TEST_URL
 %{_mandir}/man3/*.3*
 
 %changelog
+* Thu Mar 26 2020 Petr Pisar <ppisar@redhat.com> - 6.43-5
+- Normalize the shebangs (bug #1817407)
+
 * Fri Feb 14 2020 Petr Pisar <ppisar@redhat.com> - 6.43-4
 - Import to SCL
 
